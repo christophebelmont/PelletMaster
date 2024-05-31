@@ -1,0 +1,168 @@
+esphome:
+  name: klover-easy
+  friendly_name: Klover Easy
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "HXkFuyOiePECUEPyfyMSodautL3hoj6uCHmth343EVI="
+
+ota:
+  password: "0eb314b46cd09f7f1db9530940c718a9"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Klover-Easy Fallback Hotspot"
+    password: "48bnxKXPjcWj"
+
+captive_portal:
+
+uart:
+  id: uart_bus
+  rx_pin: GPIO0
+  tx_pin: GPIO2
+  baud_rate: 1200
+  stop_bits: 2
+
+micronova:
+  enable_rx_pin: GPIO4
+
+text_sensor:
+  - platform: micronova
+    stove_state:
+      name: Stove status
+      id: stove_status
+      icon: mdi:stove
+
+  - platform: wifi_info
+    ip_address:
+      name: "Wifi Info: IP Address"
+    ssid:
+      name: "Wifi Info: SSID"
+
+sensor:
+  - platform: micronova
+    fumes_temperature:
+      name: Fumes temperature
+      icon: mdi:smoke
+    stove_power:
+      name: Stove power level
+      icon: mdi:speedometer
+    water_temperature:
+      name: Water temperature
+      icon: mdi:thermometer-water
+
+  - platform: uptime
+    name: 'Uptime'
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+
+number:
+  - platform: micronova
+    power_level:
+      name: Stove Max Power
+
+button:
+   - platform: micronova
+     custom_button:
+       internal: true
+       name: "IR_OnOff_command"
+       id: ir_onoff_command
+       memory_location: 0x80
+       memory_address: 0x58
+       memory_data: 0x5a
+   - platform: restart
+     name: Klover Easy Restart
+   - platform: template
+     name: "Poêle On/Off"
+     on_press:
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+      - button.press: ir_onoff_command
+      - delay: 100ms
+
+switch:
+  - platform: gpio
+    name: "Thermostat Ambiance"
+    pin: GPIO12
+    icon: mdi:thermometer-check
+  - platform: template
+    name: "Stove IR On/Off"
+    restore_mode: DISABLED
+    icon: mdi:fire-circle
+    lambda: |-
+      if (id(stove_status).state == "Off") {
+        return false;
+      } else {
+        return true;
+      }
+    id: stove_ir_switch
+    turn_on_action:
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    turn_off_action:
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
+    - button.press: ir_onoff_command
+    - delay: 100ms
